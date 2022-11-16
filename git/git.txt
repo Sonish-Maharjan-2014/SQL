@@ -1,0 +1,24 @@
+git?
+version control
+time machine
+check points(commit)
+multiverse(branches)
+synchronising()
+
+==========
+git config
+==========
+git config --global user.name ""
+git config --global user.email ""
+
+git init
+
+git add (FILENAME)
+git add --all
+git add -A
+git add .
+
+git commit -m "First commit"
+
+git log
+
