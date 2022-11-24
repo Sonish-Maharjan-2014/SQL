@@ -1,0 +1,257 @@
+CREATE TABLE employee(employeeid int primary key, firstname varchar(15), middlename varchar(20), lastname varchar(30), age int, salary int,location varchar(50) default 'gwarko'  not null);
+
+
+CREATE TABLE employee(
+employeeid int, 
+firstname varchar(15), 
+middlename varchar(20), 
+lastname varchar(30), 
+age int, 
+salary int,
+location varchar(50) default 'gwarko'  not null,
+PRIMARY KEY(employeeid,firstname)
+);
+
+INSERT INTO employee(employeeid, firstname, middlename, lastname, age, salary, location) VALUES(1,"Ram","Kumar","Sharma",40,  40000);
+
+SELECT * FROM employee;
+
+
+CREATE TABLE employee(
+employeeid int AUTO_INCREMENT, 
+firstname varchar(15), 
+middlename varchar(20), 
+lastname varchar(30), 
+age int, 
+salary int,
+location varchar(50) default 'gwarko'  not null,
+PRIMARY KEY(employeeid,firstname)
+);
+
+Unique
+============
+only one primary key and primary key canno t have null value, it is use to get unique record
+
+unique key can hold null value
+mysql can hold many null but other compiler may hold only one null
+ table has only one primary key but can have multiple unique key in the table
+ 
+ 
+ 
+ 
+ CREATE TABLE employee(
+employeeid int AUTO_INCREMENT, 
+firstname varchar(15),  
+lastname varchar(30), 
+age int, 
+PRIMARY KEY(firstname, lastname)
+);
+
+SELECT DISTINCT location FROM student;
+
+SELECT * FROM studnet ORDER BY student_fname desc;
+
+
+SELECT student_fname FROM student Order BY enrollment_date DESC LIMIT 1;
+
+
+SELECT * FROM student WHERE student_fname LIKE '%/%%';
+
+DISTINCT
+==========
+DISTINCT AND ORDERE BY DOESNT WORK AT THE SAME TIME
+
+SELECT source_of_jonining FROM student;
+
+ORDER OF EXECUTION
+================
+FROM (LOADING THE TABLE)
+
+SELECT (PROJECTING source_of_joining)
+
+SELECT source_of_joiningm enrollment_date FROM student;
+
+SELECT source_of_joiningm enrollment_date FROM student ORDER BY enrollment_date;
+================
+FROM (LOADING THE TABLE)
+SELECT (PROJECTING source_of_joining, enrollment_date);
+ORDER BY (based on enrollment_date it will order by select source_of_joninig)
+
+
+===========
+SELECT DISTINCT source_of_joining FROM studnets ORDER BY enrollment_date;
+ORDER OF EXECUTION
+================
+FROM
+
+SELECT
+
+DISTINCT
+
+ORDER BY
+
+========================================
+AGGREGRATE FUNCTION
+========================================
+INPUT IS MANY LINE AND OUTPUT IS ONE LINE
+
+COUNT
+
+SELECT COUNT(*) FROM student;
+
+SELECT COUNT(DISTINCT student_company) AS companies FROM student;
+
+SELECT COUNT(DISTINCT source_of_joining) FROM student;
+
+SELECT batch_date FROM student;
+
+=====================================
+GROUP BY
+====================================
+HOW MANY PEOPLE JOINED BY DIFFENERNT SOURCE LIKE 'FRIEND'
+
+SELECT source_of_joining, COUNT(*) FROM student GROUP BY source_of_joining = 'friend';
+
+
+location, source_of_joninig
+
+SELECT location, source_of_joining FROM student;
+
+SELECT location, source_of_joining, COUNT(*) FROM student GROUP BY location, source_of_joining;
+
+SELECT selected_course, COUNT(*) FROM student GROUP BY selected_course;
+
+=====================================
+MIN & MAX
+=====================================
+SELECT MIN(years_of_exp) FROM student;
+
+SELECT MAX(years_of_exp) FROM student;
+
+Select source_of_joining, max(years_of_exp) from student group by source_of_joining;
+
+SELECT SUM(SORCE OF JONING) FROM STUDENT;
+
+AVG
+=======
+SELECT location, AVG(years_of_exp) FROM student group by location
+
+
+GROUP BY
+===============
+
+
+data type
+=============================================
+Decimal
+time stamp
+
+
+MariaDB [trendytech]> create table course_new( courseid int not null, coursename varchar(30) not null, coursedurationmonths decimal(3,1) not null, coursefee int not null, changed_at timestamp default now() on update now()/current_timestamp(), primary key(courseid));
+
+==========================================
+Logical operator
+========================
+!= or <>--------> not equal to 
+like and not like ----> eg: '%data%'
+=
+>=
+>
+<=
+<
+in
+between and not betweeen -----> eg: between 8 and 12
+
+select * from student where student_company = 'flipkart' or student_company = 'walmart' or student_company = 'microsoft';
+
+select * from student where student_company in ('filpkart','walmart', 'microsoft');
+
+case
+
+select courseid,coursename,coursefee,
+    -> case
+    -> when coursedurationmonths > 4 then 'master'
+    -> else 'diploma'
+    -> end as course_type 
+    -> from course_new;
+    
+select student_id, student_fname, student_lname, student_company,
+    -> CASE
+    -> WHEN student_company in ('flipkart', 'walmart', 'microsoft') then 'product_based'
+    -> ELSE 'service_based'
+    -> END as 'company_type'
+    -> FROM student;
+
+====================================================
+JOINs
+==============
+
+tables
+->student
+student_fname, selected_course
+->course
+course_id, course_name
+
+
+NESTED QUERY
+================
+select course_name from course where course_id = (select selected_course from student where student_fname = 'ram');
+
+==================
+select student_fname, course_name from student join course on student.selected_course = course.course_id;
+
+BY DEFAULT join == inner join
+
+inner join = matched in both table are only joined
+
+outer join = every row in first table is linked with every data in second table unmatched records are set null
+
+Left outer join
+===============
+all the matching record are considered + all the non matching recods in the left table which does not have match in the right
+
+Right outer join
+==============================
+all the matching record are considered + all the non matching record in the right table which doesnt have mathc in the left
+
+Full outer join (Union of left and right)
+====================
+all the matching record + non matchiing from left + non matching form right 
+
+select student_fname, student_lname, course_name from student_latest right join course_latest on student_latest.selected_course = course_latest.course_id union select student_fname, student_lname, course_name from student_latest left join course_latest on student_latest.selected_course = course_latest.course_id; 
+
+
+cross join
+===============
+select * from student join course;
+
+=====================================================
+where vs having clause in sql
+===============================
+
+select source_of_joining, count(*) as total from student group by source_of_joining;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
