@@ -375,18 +375,143 @@ Solution (CTE/ With Clause)
 
 With total_orders (order_customer_id, total_order_per_customer) as 
 (select order_customer_id, count(*) as total_order_per_customer from orders group by order_customer_id)
-Select avg(total_order_per_customer) as avg_total_order_per_customer from total_orders 
+Select avg(total_order_per_customer) as avg_total_order_per_customer from total_orders
+
+query3(query2(query(1))) --> subquery
+
+CTE
+===
+query1
+query2
+query3
 
 
+I want to find preminum customers who plascecs more orddrs than average number of order
+==========================
 
+Solution1:(subquery) 
 
+Select * from (select order_customer_id, count(*) as total_order_per_customer from orders group by order_customer_id) total_orders
+
+join
+
+(select avg(total_customer_per_customer) as avg_total_customer_per_customer from (select order_customer_id, count(*) as total_order_per_customer from orders group by order_customer_id)) average_order
+
+ total_orders.total_order_per_customer > average_order.avg_total_customer_per_customer;
  
+ ====================
+ Solution2: (CTE)
+ 3 Steps:
+ 1: calculate total orders per customer
+ 2: calculate average order of customer
+ 3: get to know which customer is premimum
+ 
+ With total_orders (order_customer_id, total_order_per_customer) as 
+ (select order_customer_id, count(*) as total_order_per_customer from orders group by order_customer_id),
+ average_orders(avg_total_order_per_customer) as 
+ (select avg(total_order_per_customer) as avg_total_order_per_customer from total_orders)
+ select * from total_orders join average_orders on total_orders.total_order_per_customer > average_orders.avg_total_order_per_customer;
 
 
+We must use query after with clause
+We can use the assignment only in the immediate query
+CTE defines the temporary result that uoutcan refer in select, insert, update delete statement immediate follows the CTE
+
+CTE canimprove the performance but not always
+ 
+ ==========================================
+ Order of Executtion in SQL
+ ==========================
+ 
+ Orders Table
+ ==============
+ order_id(PK), order_date, customer_id, order_status
+ 
+ Customer Table
+ ===============
+ customer_id(PK) customer_fname, customer_lname, username, password, address, city
+ 
+ Select order_id, customer_id, from orders where order_id=5;
+ 
+ seek and scan
+ =============
+ 
+ seek is generally quite faster than scan
+ 
+ 1
+ 7
+ 4
+ 8
+ 2
+ 9
+ 10
+ 3
+  if N element then we have to search N element int the worst case
+  O(N)
+  
+  1
+  2
+  3
+  4
+  7
+  8
+  9
+  10
+  
+  if it is sorted it is easy to serarch
+  
+  Primary Key
+  ===========
+  order_id(clustered)
+  clustered -> Records will be physically ordered in the actual table
+  =========
+  
+  
+  id = 4
+  order_id = 5 (3 more columns)
+  id = 6
+ seek -->quickly  able to search due to sorted data done in index
+ scan -->cannot quickly search, search by scanning every record
+ 
+ clustered index Vs non Clustered index
+ ======================================
+ 
+ composite clustered index (order_id, customer_id)
+ 
+ clustered index (order_id)
+ 
+ non clustered index -->any number of column overhead due to 
+ 
+ select city, count(*) as total from orders join customers on orders.customer_id = customer.customer_id where order_status != 'PENDING_STATUS' group by city having count(*) >10 order by total desc;
+ 
+ Read the plan right to left and form top to bottom
+ 
+ from, join
+ 
+ where
+ 
+ group by
+ 
+ having
+ 
+ select (alias is done here so alias cannot be done in having clause)
+ 
+ order by
+ 
+ limit
+ 
+!!!there may be the cases that doednt follow the above execution
+
+ select city, count(*) as total from orders join customers on orders.customer_id = customer.customer_id where order_status != 'PENDING_STATUS' group by city having city = 'Phoenix' order by total desc;
+ 
+  select top 3 city, count(*) as total from orders join customers on orders.customer_id = customer.customer_id where order_status != 'PENDING_STATUS' group by city having city = 'Phoenix' order by total desc;
 
 
+count(*) > 100
+filter
+sort
 
-
-
-
+count(*) < 10
+sort 
+filter
 
