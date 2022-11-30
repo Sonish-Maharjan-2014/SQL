@@ -515,3 +515,98 @@ count(*) < 10
 sort 
 filter
 
+
+
+=============================================================================
+Seccond highest salary
+======================
+
+select max(salary) as SecondHighestSalary from employee where salary != (select max(salary) from Employee);
+
+select ifnull ((select distinct salary from employee order by salary desc limit 1 offset 1), Null) as secondhighestsalary; 
+
+select ifnull ((select distinct salary from (select salary, dense_rank() over(order by salary desc) as rank from employee_new)temp   where temp.rank =2),NULL) as secondHighest;
+
+
+Nth highest salary
+==================
+
+select salary from employee order by salary desc limit 1 offset 1
+
+	
+consecutive 3 number
+
+Logs table:
++----+-----+
+| id | num |
++----+-----+
+| 1  | 1   |
+| 2  | 1   |
+| 3  | 1   |
+| 4  | 2   |
+| 5  | 1   |
+| 6  | 2   |
+| 7  | 2   |
++----+-----+
+
+select distinct num from Logs l1 
+join Logs l2 on l2.id = l1.id+1 and l2.num=l1.num
+join Logs l3 on l3.id = l1.id+2 and l3.num = l1.num
+
+
+Employee table:
++----+-------+--------+-----------+
+| id | name  | salary | managerId |
++----+-------+--------+-----------+
+| 1  | Joe   | 70000  | 3         |
+| 2  | Henry | 80000  | 4         |
+| 3  | Sam   | 60000  | Null      |
+| 4  | Max   | 90000  | Null      |
++----+-------+--------+-----------+
+
+Write an SQL query to find the employees who earn more than their managers.
+
+Return the result table in any order.
+====================================
+
+select name as Employee from Employee e1 
+join Employee e2 on e1.managerId = e2.id and e1.salary > e2.salary
+
+
+Person table:
++----+---------+
+| id | email   |
++----+---------+
+| 1  | a@b.com |
+| 2  | c@d.com |
+| 3  | a@b.com |
++----+---------+
+
+Write an SQL query to report all the duplicate emails.
+Return the result table in any order.
+
+select email as Email from (select email, count(*) as c from Person group by email)temp where temp.c >1;
+
+
+Customers table:
++----+-------+
+| id | name  |
++----+-------+
+| 1  | Joe   |
+| 2  | Henry |
+| 3  | Sam   |
+| 4  | Max   |
++----+-------+
+Orders table:
++----+------------+
+| id | customerId |
++----+------------+
+| 1  | 3          |
+| 2  | 1          |
++----+------------+
+
+Write an SQL query to report all customers who never order anything.
+Return the result table in any order.
+
+select name as 'Customers'from (select Customers.id,name,customerId  from Customers left join Orders on Customers.id =Orders.customerId)temp where temp.customerId is NULL
+
